@@ -5,9 +5,9 @@ github:
   token: "UPDATECLI_GITHUB_TOKEN"
 scm:
   default:
-    owner: "rancher"
+    owner: "mgfritch"
     repository: "image-build-sriov-operator"
-    branch: "main"
+    branch: "updatecli"
   upstream:
     owner: "k8snetworkplumbingwg"
     repository: "sriov-network-operator"
