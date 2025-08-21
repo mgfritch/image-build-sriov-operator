@@ -2,11 +2,27 @@
 name: "Update build base version"
 
 sources:
+  upstream:
+    name: Get upstream release
+    kind: githubrelease
+    spec:
+      owner: '{{ .scm.upstream.owner }}'
+      repository: '{{ .scm.upstream.repository }}'
+      token: '{{ requiredEnv .github.token }}'
+      typefilter:
+        release: true
+        draft: false
+        prerelease: false
+      versionfilter:
+        kind: semver
+
   gomod:
     name: Get latest Golang version based on go.mod
     kind: file
+    dependson:
+      - upstream
     spec:
-      file: https://raw.githubusercontent.com/{{ .scm.buildbase.owner }}/{{ .scm.buildbase.repository }}/master/go.mod
+      file: 'https://raw.githubusercontent.com/{{ .scm.upstream.owner }}/{{ .scm.upstream.repository }}/{{ source "upstream" }}/go.mod'
       matchpattern: 'go ([0-9]+\.[0-9]+)'
     transformers:
       - trimprefix: "go "
