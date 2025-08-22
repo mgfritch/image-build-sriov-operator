@@ -1,5 +1,5 @@
 ARG BCI_IMAGE=registry.suse.com/bci/bci-base
-ARG GO_IMAGE=rancher/hardened-build-base:v1.23.12b1
+ARG GO_IMAGE=rancher/hardened-build-base:v1.23.11b1
 
 # Image that provides cross compilation tooling.
 FROM --platform=$BUILDPLATFORM rancher/mirrored-tonistiigi-xx:1.6.1 AS xx
@@ -16,7 +16,7 @@ RUN set -x && \
 
 FROM base AS builder
 ENV CGO_ENABLED=0
-ARG TAG=v1.5.0
+ARG TAG=v1.6.0
 ARG BUILD
 ENV VERSION_OVERRIDE=${TAG}${BUILD}
 ENV GOFLAGS=-trimpath
