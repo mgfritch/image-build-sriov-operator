@@ -2,7 +2,7 @@
 name: "Update upstream version"
 
 sources:
-  upstream:
+  githubrelease:
     name: Get upstream release
     kind: githubrelease
     spec:
@@ -20,9 +20,9 @@ sources:
     name: Get golang version
     kind: file
     dependson:
-      - upstream
+      - githubrelease
     spec:
-      file: 'https://raw.githubusercontent.com/{{ .scm.upstream.owner }}/{{ .scm.upstream.repository }}/{{ source "upstream" }}/go.mod'
+      file: 'https://raw.githubusercontent.com/{{ .scm.upstream.owner }}/{{ .scm.upstream.repository }}/{{ source "githubrelease" }}/go.mod'
       matchpattern: 'go ([0-9]+\.[0-9]+)'
     transformers:
       - trimprefix: "go "
@@ -46,10 +46,10 @@ sources:
 
 targets:
   dockerfile:
-    name: 'Bump Dockerfile to upstream version {{ source "upstream" }}'
+    name: 'Bump Dockerfile to upstream version {{ source "githubrelease" }}'
     kind: dockerfile
     scmid: default
-    sourceid: upstream
+    sourceid: githubrelease
     spec:
       file: "Dockerfile"
       instruction:
@@ -57,14 +57,14 @@ targets:
         matcher: "TAG"
 
   makefile:
-    name: 'Bump Makefile to upstream version {{ source "upstream" }}'
+    name: 'Bump Makefile to upstream version {{ source "githubrelease" }}'
     kind: file
     scmid: default
     disablesourceinput: true
     spec:
       file: Makefile
       matchpattern: '(?m)^TAG \:\= (.*)'
-      replacepattern: 'TAG := {{ source "upstream" }}$$(BUILD_META)'
+      replacepattern: 'TAG := {{ source "githubrelease" }}$$(BUILD_META)'
 
   buildbase:
     name: 'Bump to build base version {{ source "buildbase" }}'
@@ -93,7 +93,7 @@ scms:
 
 actions:
   default:
-    title: 'Bump to upstream version {{ source "upstream" }}'
+    title: 'Bump to upstream version {{ source "githubrelease" }}'
     kind: github/pullrequest
     spec:
       automerge: false
